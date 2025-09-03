@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Selected/Checked state - uses brighter gray -->
+    <item android:state_checked="true" android:color="@color/nav_menu_active_gray" />
+    <!-- Pressed state -->
+    <item android:state_pressed="true" android:color="@color/nav_menu_active_gray" />
+    <!-- Default state -->
+    <item android:color="@color/md_theme_on_surface" />
+</selector>
