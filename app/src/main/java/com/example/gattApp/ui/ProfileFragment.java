@@ -31,12 +31,12 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.ArrayList;
 
-public class Item1Fragment extends ItemFragment {
+public class ProfileFragment extends ItemFragment {
 
     private TextView mTextView1;
     private TextView mTextView2;
     private TextView mTextView4;
-    private final static String TAG = Item1Fragment.class.getSimpleName();
+    private final static String TAG = ProfileFragment.class.getSimpleName();
     private static int mCnt = 0;
     private float yMax1, yMax2;
     private Button mButton1;
@@ -201,10 +201,10 @@ public class Item1Fragment extends ItemFragment {
         super.onAttach(context);
         Log.i(TAG, "onAttach.");
         Activity a = getActivity();
-        if (a instanceof Item1Fragment.messageManager == false) {
-            throw new ClassCastException("Activity have to implement Item1Fragment.messageManager");
+        if (a instanceof ProfileFragment.messageManager == false) {
+            throw new ClassCastException("Activity have to implement ProfileFragment.messageManager");
         }
-        mCallback = (Item1Fragment.messageManager) a;
+        mCallback = (ProfileFragment.messageManager) a;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -215,7 +215,7 @@ public class Item1Fragment extends ItemFragment {
         mCnt = 0;
         stopper = true;
 
-        View rootView = inflater.inflate(R.layout.fragment_item1, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         mTextView1 = rootView.findViewById(R.id.textView1);
         mTextView2 = rootView.findViewById(R.id.textView2);
         mTextView4 = rootView.findViewById(R.id.textView4);

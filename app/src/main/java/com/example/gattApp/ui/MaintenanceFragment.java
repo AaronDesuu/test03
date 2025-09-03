@@ -19,9 +19,9 @@ import com.example.gattApp.R;
 
 import java.util.ArrayList;
 
-public class Item3Fragment extends ItemFragment {
+public class MaintenanceFragment extends ItemFragment {
 
-    private final static String TAG = Item3Fragment.class.getSimpleName();
+    private final static String TAG = MaintenanceFragment.class.getSimpleName();
     private static int mCnt = 0;
     private Button mButton1;
     private Button mButton2;
@@ -77,16 +77,16 @@ public class Item3Fragment extends ItemFragment {
         super.onAttach(context);
         Log.i(TAG, "onAttach.");
         Activity a = getActivity();
-        if (a instanceof Item3Fragment.messageManager == false) {
-            throw new ClassCastException("Activity have to implement Item3Fragment.messageManager");
+        if (a instanceof MaintenanceFragment.messageManager == false) {
+            throw new ClassCastException("Activity have to implement MaintenanceFragment.messageManager");
         }
-        mCallback = (Item3Fragment.messageManager) a;
+        mCallback = (MaintenanceFragment.messageManager) a;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView.");
-        View rootView = inflater.inflate(R.layout.fragment_item3, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_maintenence, container, false);
 
         mCnt = 0;
         mSelectButton = -1;

@@ -20,9 +20,9 @@ import com.example.gattApp.R;
 
 import java.util.ArrayList;
 
-public class Item2Fragment extends ItemFragment {
+public class DetailFragment extends ItemFragment {
 
-    private final static String TAG = Item2Fragment.class.getSimpleName();
+    private final static String TAG = DetailFragment.class.getSimpleName();
     private static int mCnt = 0;
     private Button mButton1;
     private Button mButton2;
@@ -80,10 +80,10 @@ public class Item2Fragment extends ItemFragment {
         super.onAttach(context);
         Log.i(TAG, "onAttach.");
         Activity a = getActivity();
-        if (a instanceof Item2Fragment.messageManager == false) {
-            throw new ClassCastException("Activity have to implement Item2Fragment.messageManager");
+        if (a instanceof DetailFragment.messageManager == false) {
+            throw new ClassCastException("Activity have to implement DetailFragment.messageManager");
         }
-        mCallback = (Item2Fragment.messageManager) a;
+        mCallback = (DetailFragment.messageManager) a;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -94,7 +94,7 @@ public class Item2Fragment extends ItemFragment {
         mSelectButton = -1;
         stopper = true;
 
-        View rootView = inflater.inflate(R.layout.fragment_item2, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
         mDeviceView = rootView.findViewById(R.id.deviceView);
         mOutView = rootView.findViewById(R.id.itemView);

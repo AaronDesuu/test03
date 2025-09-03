@@ -33,13 +33,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Item0Fragment extends ItemFragment {
+public class StatusFragment extends ItemFragment {
 
     private TextView mTextView1;
     private TextView mTextView2;
     private TextView mTextView3;
     private TextView mTextView4;
-    private final static String TAG = Item0Fragment.class.getSimpleName();
+    private final static String TAG = StatusFragment.class.getSimpleName();
     private static int mCnt = 0;
     private static int mMaxEntry;
     private static int CapMax1, CapMax2, CapMax21, CapMax3, CapMin2;
@@ -224,10 +224,10 @@ public class Item0Fragment extends ItemFragment {
         super.onAttach(context);
         Log.i(TAG, "onAttach.");
         Activity a = getActivity();
-        if (a instanceof Item0Fragment.messageManager == false) {
-            throw new ClassCastException("Activity have to implement Item0Fragment.messageManager");
+        if (a instanceof StatusFragment.messageManager == false) {
+            throw new ClassCastException("Activity have to implement StatusFragment.messageManager");
         }
-        mCallback = (Item0Fragment.messageManager) a;
+        mCallback = (StatusFragment.messageManager) a;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -239,7 +239,7 @@ public class Item0Fragment extends ItemFragment {
         mCnt = 0;
         mMaxEntry = 60;
 
-        View rootView = inflater.inflate(R.layout.fragment_item0, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_status, container, false);
         mTextView1 = rootView.findViewById(R.id.textView1);
         mTextView2 = rootView.findViewById(R.id.textView2);
         mTextView3 = rootView.findViewById(R.id.textView3);

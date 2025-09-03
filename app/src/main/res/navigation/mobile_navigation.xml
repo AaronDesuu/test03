@@ -7,33 +7,33 @@
 
     <fragment
         android:id="@+id/nav_item0"
-        android:name="com.example.gattApp.ui.Item0Fragment"
+        android:name="com.example.gattApp.ui.StatusFragment"
         android:label="@string/menu_item0"
-        tools:layout="@layout/fragment_item0" />
+        tools:layout="@layout/fragment_status" />
 
     <fragment
         android:id="@+id/nav_item1"
-        android:name="com.example.gattApp.ui.Item1Fragment"
+        android:name="com.example.gattApp.ui.ProfileFragment"
         android:label="@string/menu_item1"
-        tools:layout="@layout/fragment_item1" />
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/nav_item2"
-        android:name="com.example.gattApp.ui.Item2Fragment"
+        android:name="com.example.gattApp.ui.DetailFragment"
         android:label="@string/menu_item2"
-        tools:layout="@layout/fragment_item2" />
+        tools:layout="@layout/fragment_detail" />
     <fragment
         android:id="@+id/nav_item3"
-        android:name="com.example.gattApp.ui.Item3Fragment"
+        android:name="com.example.gattApp.ui.MaintenanceFragment"
         android:label="@string/menu_item3"
-        tools:layout="@layout/fragment_item3" />
+        tools:layout="@layout/fragment_maintenence" />
     <fragment
         android:id="@+id/nav_item4"
-        android:name="com.example.gattApp.ui.Item4Fragment"
+        android:name="com.example.gattApp.ui.CustomizeFragment"
         android:label="@string/menu_item4"
-        tools:layout="@layout/fragment_item4" />
+        tools:layout="@layout/fragment_customize" />
     <fragment
         android:id="@+id/nav_item5"
-        android:name="com.example.gattApp.ui.Item5Fragment"
+        android:name="com.example.gattApp.ui.SetupFragment"
         android:label="@string/menu_item5"
-        tools:layout="@layout/fragment_item5" />
+        tools:layout="@layout/fragment_setup" />
 </navigation>

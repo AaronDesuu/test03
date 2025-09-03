@@ -28,9 +28,9 @@ import com.example.gattApp.R;
 
 import java.util.ArrayList;
 
-public class Item5Fragment extends ItemFragment {
+public class SetupFragment extends ItemFragment {
 
-    private final static String TAG = Item5Fragment.class.getSimpleName();
+    private final static String TAG = SetupFragment.class.getSimpleName();
     private Button mButton1;
 
     private messageManager mCallback;
@@ -52,10 +52,10 @@ public class Item5Fragment extends ItemFragment {
         super.onAttach(context);
         Log.i(TAG, "onAttach.");
         Activity a = getActivity();
-        if (a instanceof Item5Fragment.messageManager == false) {
-            throw new ClassCastException("Activity have to implement Item5Fragment.messageManager");
+        if (a instanceof SetupFragment.messageManager == false) {
+            throw new ClassCastException("Activity have to implement SetupFragment.messageManager");
         }
-        mCallback = (Item5Fragment.messageManager) a;
+        mCallback = (SetupFragment.messageManager) a;
     }
 
     private void setAnime() {
@@ -70,7 +70,7 @@ public class Item5Fragment extends ItemFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView.");
-        View rootView = inflater.inflate(R.layout.fragment_item5, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_setup, container, false);
 
         Spinner spinner = rootView.findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
