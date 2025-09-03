@@ -1,26 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base application theme using Material 3 with your original colors -->
     <style name="Theme.GattClient" parent="Theme.Material3.DayNight">
-        <!-- Material 3 color attributes -->
+        <!-- Primary colors - same as your original teal_200 (#4C4C4C) -->
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_on_primary</item>
         <item name="colorPrimaryContainer">@color/md_theme_primary_container</item>
         <item name="colorOnPrimaryContainer">@color/md_theme_on_primary_container</item>
 
+        <!-- Secondary colors - using your purple scheme -->
         <item name="colorSecondary">@color/md_theme_secondary</item>
         <item name="colorOnSecondary">@color/md_theme_on_secondary</item>
         <item name="colorSecondaryContainer">@color/md_theme_secondary_container</item>
         <item name="colorOnSecondaryContainer">@color/md_theme_on_secondary_container</item>
 
+        <!-- Tertiary colors - using your yellow accent -->
         <item name="colorTertiary">@color/md_theme_tertiary</item>
         <item name="colorOnTertiary">@color/md_theme_on_tertiary</item>
         <item name="colorTertiaryContainer">@color/md_theme_tertiary_container</item>
         <item name="colorOnTertiaryContainer">@color/md_theme_on_tertiary_container</item>
 
+        <!-- Error colors - using your red -->
         <item name="colorError">@color/md_theme_error</item>
         <item name="colorOnError">@color/md_theme_on_error</item>
         <item name="colorErrorContainer">@color/md_theme_error_container</item>
         <item name="colorOnErrorContainer">@color/md_theme_on_error_container</item>
 
+        <!-- Background and Surface colors - using your teal_700 and black/white -->
         <item name="android:colorBackground">@color/md_theme_background</item>
         <item name="colorOnBackground">@color/md_theme_on_background</item>
         <item name="colorSurface">@color/md_theme_surface</item>
@@ -31,9 +37,9 @@
         <item name="colorOutline">@color/md_theme_outline</item>
         <item name="colorOutlineVariant">@color/md_theme_outline_variant</item>
 
-        <!-- Status bar color -->
+        <!-- Keep your original status bar approach -->
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.GattClient.NoActionBar">
@@ -41,9 +47,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.GattClient.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+    <!-- Update these to use Material 3 parents -->
+    <style name="Theme.GattClient.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar">
         <item name="colorControlNormal">@color/white</item>
     </style>
 
-    <style name="Theme.GattClient.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.GattClient.PopupOverlay" parent="ThemeOverlay.Material3.Light" />
 </resources>
