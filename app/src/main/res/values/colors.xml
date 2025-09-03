@@ -49,4 +49,20 @@
     <color name="md_theme_on_surface_variant">#4C4C4C</color>
     <color name="md_theme_outline">#787878</color>
     <color name="md_theme_outline_variant">#C4C4C4</color>
+
+    <!-- Navigation Menu Colors -->
+    <color name="nav_menu_icon_tint">@color/md_theme_on_surface_variant</color>
+    <color name="nav_menu_text_color">@color/md_theme_on_surface</color>
+    <color name="nav_menu_icon_color">@color/nav_menu_icon_tint</color>
+    <color name="nav_menu_selected_background">@color/md_theme_primary_container</color>
+    <color name="nav_menu_selected_icon">#787878</color>
+    <color name="nav_menu_selected_text">#787878</color>
+
+    <!-- Brighter gray for active menu items -->
+    <color name="nav_menu_active_gray">#BABABA</color>
+
+    <!-- Navigation Header Colors -->
+    <color name="nav_header_primary">#FF6200EA</color>
+    <color name="nav_header_secondary">#4C4C4C</color>
+    <color name="nav_header_accent">#FF8A50</color>
 </resources>

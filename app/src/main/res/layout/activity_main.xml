@@ -16,10 +16,18 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
+        style="@style/NavigationViewStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:background="@android:color/white"
+        android:elevation="8dp"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        app:menu="@menu/activity_main_drawer"
+        app:itemIconTint="@color/nav_menu_icon_color"
+        app:itemTextColor="@color/nav_menu_text_color"
+        app:itemBackground="@drawable/nav_menu_item_background"
+        app:itemHorizontalPadding="16dp"
+        app:itemVerticalPadding="8dp" />
 </androidx.drawerlayout.widget.DrawerLayout>

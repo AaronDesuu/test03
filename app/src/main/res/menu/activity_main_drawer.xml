@@ -4,23 +4,30 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
+        <!-- Detail data moved to top -->
+        <item
+            android:id="@+id/nav_item2"
+            android:icon="@drawable/ic_detail_data"
+            android:title="@string/menu_item2" />
         <item
             android:id="@+id/nav_item0"
+            android:icon="@drawable/ic_measure_chart"
             android:title="@string/menu_item0" />
         <item
             android:id="@+id/nav_item1"
+            android:icon="@drawable/ic_profile_chart"
             android:title="@string/menu_item1" />
         <item
-            android:id="@+id/nav_item2"
-            android:title="@string/menu_item2" />
-        <item
             android:id="@+id/nav_item3"
+            android:icon="@drawable/ic_maintenance"
             android:title="@string/menu_item3" />
         <item
             android:id="@+id/nav_item4"
+            android:icon="@drawable/ic_customize"
             android:title="@string/menu_item4" />
         <item
             android:id="@+id/nav_item5"
+            android:icon="@drawable/ic_setup"
             android:title="@string/menu_item5" />
     </group>
 </menu>

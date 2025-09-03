@@ -9,4 +9,27 @@
         <item name="android:windowMinWidthMajor">@dimen/dialog_min_width_major</item>
         <item name="android:windowMinWidthMinor">@dimen/dialog_min_width_minor</item>
     </style>
+
+    <!-- Custom Navigation View Style -->
+    <style name="NavigationViewStyle" parent="Widget.Design.NavigationView">
+        <item name="itemTextAppearance">@style/NavMenuTextAppearance</item>
+        <item name="itemIconTint">@color/nav_menu_icon_tint</item>
+        <item name="itemTextColor">@color/nav_menu_text_color</item>
+        <item name="itemBackground">@drawable/nav_menu_item_background</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
+    <!-- Navigation Menu Text Appearance -->
+    <style name="NavMenuTextAppearance" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- Updated Theme with Navigation Styling -->
+    <style name="Theme.GattClient.Enhanced" parent="Theme.GattClient">
+        <item name="navigationViewStyle">@style/NavigationViewStyle</item>
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorPrimaryVariant">@color/md_theme_primary_container</item>
+    </style>
 </resources>
