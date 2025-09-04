@@ -27,6 +27,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+@SuppressWarnings("all")
 public class DLMS {
     public final static int RANK_SUPER = 0;
     public final static int RANK_ADMIN = 1;
