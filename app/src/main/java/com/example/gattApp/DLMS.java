@@ -1,6 +1,7 @@
 package com.example.gattApp;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -588,7 +589,18 @@ public class DLMS {
     }
 
     public double Float(final double div, final String in) {
-        return ((double) Long.parseLong(in)) / div;
+        try {
+            // Trim whitespace and validate the input
+            String cleanInput = in.trim();
+            if (cleanInput.isEmpty()) {
+                return 0.0; // or throw an appropriate exception
+            }
+            return ((double) Long.parseLong(cleanInput)) / div;
+        } catch (NumberFormatException e) {
+            // Log the error and return a default value or rethrow with context
+            Log.e("DLMS", "Cannot parse string as number: '" + in + "'", e);
+            return 0.0; // or handle as appropriate for your application
+        }
     }
 
     public int Count(){
@@ -1678,20 +1690,20 @@ public class DLMS {
                 break;
 
             case IST_CHECK_MEASURE:
-                out.add(data.get(0));
+                if (data.size() > 0) out.add(data.get(0));
 //              out.add(String.format("Stamp date: %s", data.get(7)));
 //              out.add(String.format("Stamp date: %s", data.get(9)));
-                out.add(String.format("Serial NO.: %s", data.get(1)));
-                out.add(String.format("IMP: %.3f [kWh]", Float(1000.0, data.get(2))));
-                out.add(String.format("EXP: %.3f [kWh]", Float(1000.0, data.get(3))));
-                out.add(String.format("ABS: %.3f [kWh]", Float(1000.0, data.get(4))));
-                out.add(String.format("NET: %.3f [kWh]", Float(1000.0, data.get(5))));
-                out.add(String.format("Max Imp : %.3f [kW], Exp: %.3f [kW]", Float(1000.0, data.get(6)), Float(1000.0, data.get(8))));
-                out.add(String.format("Inst Imp: %.3f [kW], Exp: %.3f [kW]", Float(1000.0, data.get(10)), Float(1000.0, data.get(11))));
-                out.add(String.format("Volt0: %.2f [V], Min: %.2f [V]", Float(100.0, data.get(12)), Float(100.0, data.get(13))));
-                out.add(String.format("Current L1: %.2f [A], L2: %.2f [A]", Float(100.0, data.get(14)), Float(100.0, data.get(15))));
-                out.add(String.format("Power factor: %.2f ", Float(100.0, data.get(16))));
-                out.add(String.format("Block Imp: %.3f [kW], Exp: %.3f [kW]", Float(1000.0, data.get(17)), Float(1000.0, data.get(18))));
+                if (data.size() > 1) out.add(String.format("Serial NO.: %s", data.get(1)));
+                if (data.size() > 2) out.add(String.format("IMP: %.3f [kWh]", Float(1000.0, data.get(2))));
+                if (data.size() > 3) out.add(String.format("EXP: %.3f [kWh]", Float(1000.0, data.get(3))));
+                if (data.size() > 4) out.add(String.format("ABS: %.3f [kWh]", Float(1000.0, data.get(4))));
+                if (data.size() > 5) out.add(String.format("NET: %.3f [kWh]", Float(1000.0, data.get(5))));
+                if (data.size() > 8) out.add(String.format("Max Imp : %.3f [kW], Exp: %.3f [kW]", Float(1000.0, data.get(6)), Float(1000.0, data.get(8))));
+                if (data.size() > 11) out.add(String.format("Inst Imp: %.3f [kW], Exp: %.3f [kW]", Float(1000.0, data.get(10)), Float(1000.0, data.get(11))));
+                if (data.size() > 13) out.add(String.format("Volt0: %.2f [V], Min: %.2f [V]", Float(100.0, data.get(12)), Float(100.0, data.get(13))));
+                if (data.size() > 15) out.add(String.format("Current L1: %.2f [A], L2: %.2f [A]", Float(100.0, data.get(14)), Float(100.0, data.get(15))));
+                if (data.size() > 16) out.add(String.format("Power factor: %.2f ", Float(100.0, data.get(16))));
+                if (data.size() > 18) out.add(String.format("Block Imp: %.3f [kW], Exp: %.3f [kW]", Float(1000.0, data.get(17)), Float(1000.0, data.get(18))));
                 break;
 
             case IST_BILLING_PARAMS:
