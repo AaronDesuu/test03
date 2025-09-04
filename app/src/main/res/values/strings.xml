@@ -52,4 +52,11 @@
     <string name="release">Release</string>
     <string name="global_key">global key setting</string>
     <string name="password">password setting</string>
+
+    <string name="status_connected">Connected</string>
+    <string name="status_connecting">Connecting</string>
+    <string name="status_scanning">Scanning</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="btn_scan_description">Scan for devices</string>
+    <string name="btn_disconnect_description">Disconnect from device</string>
 </resources>

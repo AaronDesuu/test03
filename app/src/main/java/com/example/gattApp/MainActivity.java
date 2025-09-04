@@ -3,6 +3,7 @@ package com.example.gattApp;
 import static java.lang.Integer.parseInt;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -111,6 +112,141 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REQUEST_ENABLE_BT = 1;
     private ItemFragment mItemFragment;
     private String mTitle = null;
+    private TextView btnConnect;
+    private TextView btnDisconnect;
+    private View connectStatusIndicator;
+    private View disconnectStatusIndicator;
+
+    private void setupToolbarButtons() {
+        btnConnect = findViewById(R.id.btn_connect);
+        btnDisconnect = findViewById(R.id.btn_disconnect);
+        connectStatusIndicator = findViewById(R.id.connect_status_indicator);
+        disconnectStatusIndicator = findViewById(R.id.disconnect_status_indicator);
+
+        LinearLayout connectContainer = findViewById(R.id.btn_connect_container);
+        LinearLayout disconnectContainer = findViewById(R.id.btn_disconnect_container);
+
+        // Set click listeners on both container and text view
+        View.OnClickListener connectListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onConnectButtonClicked();
+            }
+        };
+
+        View.OnClickListener disconnectListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDisconnectButtonClicked();
+            }
+        };
+
+        if (btnConnect != null) btnConnect.setOnClickListener(connectListener);
+        if (connectContainer != null) connectContainer.setOnClickListener(connectListener);
+
+        if (btnDisconnect != null) btnDisconnect.setOnClickListener(disconnectListener);
+        if (disconnectContainer != null) disconnectContainer.setOnClickListener(disconnectListener);
+
+        updateToolbarButtonStates();
+    }
+
+    private void onConnectButtonClicked() {
+        Log.i(TAG, "Connect button clicked");
+
+        if (mConnected > 0 && mAddress != null) {
+            // If already connected, this acts as a "new scan" - disconnect first
+            Disconnect(true);
+        }
+
+        scanLeDevice();
+    }
+
+    private void onDisconnectButtonClicked() {
+        Log.i(TAG, "Disconnect button clicked");
+
+        // Immediately update UI to show disconnecting state
+        btnDisconnect.setEnabled(false);
+        btnDisconnect.setText("Disconnecting...");
+        disconnectStatusIndicator.setSelected(false);
+        disconnectStatusIndicator.setActivated(true); // Orange for disconnecting
+
+        Handler handler = new Handler();
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                int ret = 0;
+                ret = Release();
+                if (ret > 0) {
+                    handler.postDelayed(this, mTick);
+                } else {
+                    Disconnect(true);
+                    scanLeDevice();
+                }
+            }
+        };
+        handler.post(r);
+    }
+
+    private void updateToolbarButtonStates() {
+        if (btnConnect == null || btnDisconnect == null) return;
+
+        LinearLayout connectContainer = findViewById(R.id.btn_connect_container);
+        LinearLayout disconnectContainer = findViewById(R.id.btn_disconnect_container);
+
+        if (mService) {
+            if (mConnected > 0 && mAddress != null) {
+                // Connected state - show disconnect, hide connect
+                if (connectContainer != null) connectContainer.setVisibility(View.GONE);
+                if (disconnectContainer != null) disconnectContainer.setVisibility(View.VISIBLE);
+
+                btnDisconnect.setEnabled(true);
+                btnDisconnect.setText("Disconnect");
+                if (disconnectStatusIndicator != null) {
+                    disconnectStatusIndicator.setVisibility(View.VISIBLE);
+                    disconnectStatusIndicator.setSelected(true);  // Green dot
+                    disconnectStatusIndicator.setActivated(false);
+                }
+
+            } else if (mScanning) {
+                // Scanning state - show connect as scanning
+                if (connectContainer != null) connectContainer.setVisibility(View.VISIBLE);
+                if (disconnectContainer != null) disconnectContainer.setVisibility(View.GONE);
+
+                btnConnect.setEnabled(false);
+                btnConnect.setText("Scanning...");
+                if (connectStatusIndicator != null) {
+                    connectStatusIndicator.setVisibility(View.VISIBLE);
+                    connectStatusIndicator.setSelected(false);
+                    connectStatusIndicator.setActivated(true);  // Orange dot
+                }
+
+            } else {
+                // Disconnected state - show connect as ready
+                if (connectContainer != null) connectContainer.setVisibility(View.VISIBLE);
+                if (disconnectContainer != null) disconnectContainer.setVisibility(View.GONE);
+
+                btnConnect.setEnabled(true);
+                btnConnect.setText("Connect");
+                if (connectStatusIndicator != null) {
+                    connectStatusIndicator.setVisibility(View.VISIBLE);
+                    connectStatusIndicator.setSelected(false);
+                    connectStatusIndicator.setActivated(false);  // Red dot
+                }
+            }
+        } else {
+            // Service not available - show connect as disabled
+            if (connectContainer != null) connectContainer.setVisibility(View.VISIBLE);
+            if (disconnectContainer != null) disconnectContainer.setVisibility(View.GONE);
+
+            btnConnect.setEnabled(false);
+            btnConnect.setText("Connect");
+            if (connectStatusIndicator != null) {
+                connectStatusIndicator.setVisibility(View.VISIBLE);
+                connectStatusIndicator.setSelected(false);
+                connectStatusIndicator.setActivated(false);  // Red dot
+            }
+        }
+    }
 
     private void Disconnect(final boolean all) {
         if (mBluetoothLeService != null) {
@@ -125,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements
         mItemFragment.DeviceInfo("No E-meter selected...");
         mAddress = null;
         mDevice = null;
+        updateToolbarButtonStates(); // Add this
     }
 
     private void checkPermission() {
@@ -165,12 +302,26 @@ public class MainActivity extends AppCompatActivity implements
         }
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Set the main toolbar for navigation
         setSupportActionBar(binding.appBarMain.toolbar);
+
+        // Setup the overflow menu on the second toolbar
+        androidx.appcompat.widget.Toolbar overflowToolbar = findViewById(R.id.overflow_toolbar);
+        if (overflowToolbar != null) {
+            overflowToolbar.inflateMenu(R.menu.main);
+            overflowToolbar.setOnMenuItemClickListener(new androidx.appcompat.widget.Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    return onOptionsItemSelected(item);
+                }
+            });
+        }
+
+        setupToolbarButtons();
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_item0, R.id.nav_item1, R.id.nav_item2, R.id.nav_item3, R.id.nav_item4, R.id.nav_item5)
                 .setOpenableLayout(drawer)
@@ -319,8 +470,13 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         checkPermission();
         Log.i(TAG, "onResume.");
-        registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-//      registerReceiver(receiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+
+        // Fix for Android 13+ (API 33+) BroadcastReceiver registration
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter(), Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        }
 
         // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
         // fire an intent to display a dialog asking the user to grant permission to enable it.
@@ -329,7 +485,6 @@ public class MainActivity extends AppCompatActivity implements
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
     }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -362,30 +517,8 @@ public class MainActivity extends AppCompatActivity implements
 
         Log.i(TAG, "onOptionsItemSelected");
         switch (item.getItemId()) {
-            case R.id.menu_disconnect:
-                handler = new Handler();
-                r = new Runnable() {
-                    @Override
-                    public void run() {
-                        int ret = 0;
-                        ret = Release();
-                        if (ret > 0) {
-                            handler.postDelayed(this, mTick);
-                        } else {
-                            Disconnect(true);
-                            scanLeDevice();
-                        }
-                    }
-                };
-                handler.post(r);
-                ret = true;
-                break;
-
-            case R.id.menu_scan:
-                Disconnect(true);
-                scanLeDevice();
-                ret = true;
-                break;
+            // Remove case R.id.menu_scan: and case R.id.menu_disconnect: blocks
+            // as they are now handled by toolbar buttons
 
             case R.id.menu_select:
                 Disconnect(true);
@@ -436,46 +569,75 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 ret = true;
                 break;
+
             default:
                 ret = super.onOptionsItemSelected(item);
                 break;
         }
         return ret;
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.i(TAG, "onCreateOptionsMenu");
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        if (mService) {
-            menu.findItem(R.id.menu_select).setVisible(true);
-            if (mConnected > 0) {
-                if (mAddress != null) {
-                    menu.findItem(R.id.menu_disconnect).setVisible(true);
-                } else {
-                    menu.findItem(R.id.menu_disconnect).setVisible(false);
+        // Don't inflate menu here anymore - it's handled by overflow toolbar
+
+        // Update the overflow toolbar menu items
+        androidx.appcompat.widget.Toolbar overflowToolbar = findViewById(R.id.overflow_toolbar);
+        if (overflowToolbar != null && overflowToolbar.getMenu() != null) {
+            Menu overflowMenu = overflowToolbar.getMenu();
+
+            if (mService) {
+                if (overflowMenu.findItem(R.id.menu_select) != null) {
+                    overflowMenu.findItem(R.id.menu_select).setVisible(true);
                 }
             } else {
-                menu.findItem(R.id.menu_disconnect).setVisible(false);
+                if (overflowMenu.findItem(R.id.menu_select) != null) {
+                    overflowMenu.findItem(R.id.menu_select).setVisible(false);
+                }
             }
-            menu.findItem(R.id.menu_scan).setVisible(true);
-            menu.findItem(R.id.menu_scan).setEnabled(true);
-        } else {
-            menu.findItem(R.id.menu_select).setVisible(false);
-            menu.findItem(R.id.menu_disconnect).setVisible(false);
-            menu.findItem(R.id.menu_scan).setVisible(true);
-            menu.findItem(R.id.menu_scan).setEnabled(true);
+
+            if (mItemFragment != null && mItemFragment.getData().isEmpty()) {
+                if (overflowMenu.findItem(R.id.menu_share) != null) {
+                    overflowMenu.findItem(R.id.menu_share).setVisible(true);
+                    overflowMenu.findItem(R.id.menu_share).setEnabled(false);
+                }
+            } else {
+                if (overflowMenu.findItem(R.id.menu_share) != null) {
+                    overflowMenu.findItem(R.id.menu_share).setVisible(true);
+                    overflowMenu.findItem(R.id.menu_share).setEnabled(true);
+                }
+            }
         }
-        if (mItemFragment.getData().isEmpty()) {
-            menu.findItem(R.id.menu_share).setVisible(true);
-            menu.findItem(R.id.menu_share).setEnabled(false);
-        } else {
-            menu.findItem(R.id.menu_share).setVisible(true);
-            menu.findItem(R.id.menu_share).setEnabled(true);
-        }
+
+        updateToolbarButtonStates();
         return true;
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        Log.i(TAG, "onCreateOptionsMenu");
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//
+//        if (mService) {
+//            menu.findItem(R.id.menu_select).setVisible(true);
+//        } else {
+//            menu.findItem(R.id.menu_select).setVisible(false);
+//        }
+//
+//        if (mItemFragment != null && mItemFragment.getData().isEmpty()) {
+//            menu.findItem(R.id.menu_share).setVisible(true);
+//            menu.findItem(R.id.menu_share).setEnabled(false);
+//        } else {
+//            menu.findItem(R.id.menu_share).setVisible(true);
+//            menu.findItem(R.id.menu_share).setEnabled(true);
+//        }
+//
+//        // Update toolbar button states whenever menu is created
+//        updateToolbarButtonStates();
+//
+//        return true;
+//    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -489,6 +651,7 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
                     runOnUiThread(new Runnable() {
+                        @SuppressLint("MissingPermission")
                         @Override
                         public void run() {
                             if (device.getName() != null) {
@@ -524,9 +687,14 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @SuppressLint("MissingPermission")
+    // Replace your existing scanLeDevice method with this updated version:
     private void scanLeDevice() {
         if (!mScanning) {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            // Update button states immediately when starting scan
+            updateToolbarButtonStates();
+
             // Stops scanning after a pre-defined scan period.
             mHandler.postDelayed(new Runnable() {
                 @Override
@@ -535,14 +703,17 @@ public class MainActivity extends AppCompatActivity implements
                     mScanning = false;
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     mItemFragment.DeviceInfo("No E-meter selected...");
+                    updateToolbarButtonStates(); // Update buttons when scan completes
                     invalidateOptionsMenu();
                 }
             }, mScan);
+
             mItemFragment.DeviceInfo("Scan...");
             Log.i(TAG, "scanLeDevice-true");
             mScanning = true;
             mLeDeviceListAdapter.clear();
             mBluetoothAdapter.startLeScan(mLeScanCallback);
+            updateToolbarButtonStates(); // Update buttons when scan starts
         }
     }
 
@@ -587,7 +758,7 @@ public class MainActivity extends AppCompatActivity implements
         public long getItemId(int i) {
             return i;
         }
-
+        @SuppressLint("MissingPermission")
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             class ViewHolder {
@@ -652,6 +823,7 @@ public class MainActivity extends AppCompatActivity implements
             builder.setTitle("E-Meter list");
             if (mLeDeviceListAdapter.getCount() > 0) {
                 builder.setAdapter(mLeDeviceListAdapter, new DialogInterface.OnClickListener() {
+                    @SuppressLint("MissingPermission")
                     @Override
                     public void onClick(DialogInterface dialog, int position) {
                         mSelect = 1;
@@ -705,11 +877,13 @@ public class MainActivity extends AppCompatActivity implements
             }
             mService = true;
             mBind = true;
+            updateToolbarButtonStates(); // Add this
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             Log.i(TAG, "onServiceDisconnected");
+            updateToolbarButtonStates(); // Add this
         }
     };
     // Handles various events fired by the write_read.
@@ -725,20 +899,24 @@ public class MainActivity extends AppCompatActivity implements
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 Log.i(TAG, "ACTION_GATT_CONNECTED");
+                updateToolbarButtonStates(); // Add this
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 Log.i(TAG, "ACTION_GATT_DISCONNECTED");
                 mConnected = 0;
                 mAddress = null;
                 mDevice = null;
                 invalidateOptionsMenu();
+                updateToolbarButtonStates();
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 Log.i(TAG, "ACTION_GATT_SERVICES_DISCOVERED");
                 mConnected = 1;
                 mArrived = false;
                 invalidateOptionsMenu();
+                updateToolbarButtonStates();
             } else if (BluetoothLeService.ACTION_GATT_ERROR.equals(action)) {
                 mConnected = -1;
                 Log.i(TAG, "ACTION_GATT_ERROR");
+                updateToolbarButtonStates(); // Add this
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 Log.i(TAG, "ACTION_DATA_AVAILABLE");
                 mData = intent.getByteArrayExtra(BluetoothLeService.EXTRA_DATA);

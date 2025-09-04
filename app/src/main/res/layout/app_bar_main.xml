@@ -11,12 +11,129 @@
         android:layout_height="wrap_content"
         android:theme="@style/Theme.GattClient.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.GattClient.PopupOverlay" />
+            android:orientation="horizontal">
+
+            <!-- Toolbar takes up remaining space, but reduced to make room for buttons -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                app:popupTheme="@style/Theme.GattClient.PopupOverlay"
+                app:contentInsetEnd="0dp" />
+
+            <!-- Connection buttons positioned before the overflow menu -->
+            <LinearLayout
+                android:id="@+id/connection_buttons"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp">
+
+                <!-- Connect Button -->
+                <LinearLayout
+                    android:id="@+id/btn_connect_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/connect_button_border"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:id="@+id/btn_connect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Connect"
+                        android:textSize="12sp"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="6dp"
+                        android:textAllCaps="false"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:background="@android:color/transparent" />
+
+                    <View
+                        android:id="@+id/connect_status_indicator"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:background="@drawable/status_indicator" />
+
+                </LinearLayout>
+
+                <!-- Disconnect Button -->
+                <LinearLayout
+                    android:id="@+id/btn_disconnect_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:background="@drawable/connect_button_border"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:id="@+id/btn_disconnect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Disconnect"
+                        android:textSize="12sp"
+                        android:textColor="?attr/colorOnPrimary"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="6dp"
+                        android:textAllCaps="false"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:background="@android:color/transparent" />
+
+                    <View
+                        android:id="@+id/disconnect_status_indicator"
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:background="@drawable/status_indicator" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Overflow menu container -->
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="match_parent">
+
+                <!-- Invisible toolbar just for the overflow menu -->
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/overflow_toolbar"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:popupTheme="@style/Theme.GattClient.PopupOverlay" />
+
+            </FrameLayout>
+
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
