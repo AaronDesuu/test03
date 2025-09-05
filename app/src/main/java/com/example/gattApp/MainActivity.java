@@ -117,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements
     private View connectStatusIndicator;
     private View disconnectStatusIndicator;
 
+    private boolean mConnectButtonScan = false;
+
     private void setupToolbarButtons() {
         btnConnect = findViewById(R.id.btn_connect);
         btnDisconnect = findViewById(R.id.btn_disconnect);
@@ -154,10 +156,12 @@ public class MainActivity extends AppCompatActivity implements
         Log.i(TAG, "Connect button clicked");
 
         if (mConnected > 0 && mAddress != null) {
-            // If already connected, this acts as a "new scan" - disconnect first
+            // If already connected, disconnect first
             Disconnect(true);
         }
 
+        // Set flag to indicate this scan was initiated by connect button
+        mConnectButtonScan = true;
         scanLeDevice();
     }
 
@@ -248,6 +252,44 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void startStandardConnectionFlow() {
+        // This mimics exactly what DetailFragment buttonFunction does
+        if (mCurrentMessage < 0) {
+            final Handler handler = new Handler();
+            final Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    int ret = 0;
+                    ret = fragmentMessage(MSG_CONNECT);
+                    if (ret > 0) {
+                        handler.postDelayed(this, mTick);
+                    } else {
+                        // Connection process finished
+                        mCurrentMessage = -1;
+                        if (ret == 0) {
+                            // Success - the connection flow will handle the UI updates
+                            Log.i(TAG, "Connection completed successfully");
+                        } else {
+                            // Failure
+                            Log.i(TAG, "Connection failed");
+                        }
+                    }
+                }
+            };
+
+            // Set up the connection state exactly like DetailFragment does
+            byte[] dat = {0};
+            Multiple(dat);
+            setInterval(false);
+
+            // Start the connection process
+            mCurrentMessage = MSG_CONNECT;
+            handler.post(r);
+        } else {
+            showToast("Previous task is running. Please wait.");
+        }
+    }
+
     private void Disconnect(final boolean all) {
         if (mBluetoothLeService != null) {
             mBluetoothLeService.disconnect();
@@ -256,13 +298,15 @@ public class MainActivity extends AppCompatActivity implements
             mStage = 0;
             mStep = 0;
             mPrmState = 0;
+            mConnectButtonScan = false; // Reset the connect button scan flag
         }
         d.updateAllMeterInformation();
         mItemFragment.DeviceInfo("No E-meter selected...");
         mAddress = null;
         mDevice = null;
-        updateToolbarButtonStates(); // Add this
+        updateToolbarButtonStates();
     }
+
 
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -702,11 +746,32 @@ public class MainActivity extends AppCompatActivity implements
                     Log.i(TAG, "scanLeDevice-run");
                     mScanning = false;
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                    mItemFragment.DeviceInfo("No E-meter selected...");
-                    updateToolbarButtonStates(); // Update buttons when scan completes
+
+                    // Check if scan was initiated by connect button
+                    if (mConnectButtonScan) {
+                        mConnectButtonScan = false; // Reset the flag
+
+                        if (mLeDeviceListAdapter.getCount() > 0) {
+                            // Meters found - start the standard connection flow
+                            mItemFragment.DeviceInfo("Starting connection...");
+
+                            // Trigger the exact same connection flow that DetailFragment uses
+                            startStandardConnectionFlow();
+                        } else {
+                            // No meters found
+                            mItemFragment.DeviceInfo("No E-meter found...");
+                            showToast("No E-meters could be found. Please try scanning again.");
+                        }
+                    } else {
+                        // Regular scan (not from connect button), just update UI
+                        mItemFragment.DeviceInfo("No E-meter selected...");
+                    }
+
+                    updateToolbarButtonStates();
                     invalidateOptionsMenu();
                 }
             }, mScan);
+
 
             mItemFragment.DeviceInfo("Scan...");
             Log.i(TAG, "scanLeDevice-true");
@@ -813,7 +878,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private boolean showCandidateMeter() {
-
         boolean ret = false;
 
         if (!mScanning) {
